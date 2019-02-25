@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Morse.js</title>
+    <style>
+        body {
+            background-color: #24252a;
+        }
+        .animated {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 10rem;
+            height: 10rem;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: signal 2s ease-out infinite;
+        }
+        @keyframes signal {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                box-shadow: inset 0 0 0 1rem #29f1c3;
+            }
+            75%, 100% {
+                width: 20rem;
+                height: 20rem;
+                opacity: 0;
+                box-shadow: inset 0 0 0 0 #29f1c3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated"></div>
+    <script type="module" src="./src/morse.js"></script>
+    <script type="module" src="./src/header.js"></script>
+    <script type="module" src="./src/content.js"></script>
+</body>
+</html>
