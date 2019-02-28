@@ -1,7 +1,7 @@
 {
   "name": "morse",
   "version": "0.0.1",
-  "description": "",
+  "description": "CQRS transport API for messaging between apps in one html document",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
