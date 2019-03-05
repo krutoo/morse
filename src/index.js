@@ -1,4 +1,4 @@
-import createService from './create-service.js';
+import { createService } from './service.js';
 import getTransport from './get-transport.js';
 
 /**

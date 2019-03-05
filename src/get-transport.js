@@ -1,4 +1,4 @@
-import createTransport from './create-transport.js';
+import { createTransport } from './transport.js';
 
 export const morseRadioKey = `MorseRadio-${(1791).toString(2)}`;
 

@@ -12,7 +12,7 @@ Using **npm**: coming soon...
 
 ## Usage
 
-Simple interface allows to communicate using *commands* and *requests*:
+Simple interface allows to communicate using *commands* and *queries*:
 
 ## Example
 

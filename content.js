@@ -6,6 +6,7 @@ setTimeout(() => {
     const service = register('content');
     window.contentService = service;
 
+    // send commands
     service.command('update-settlement', { name: 'Екатеринбург', id: 162 });
     service.command('update-settlement', { name: 'Москва', id: 32 });
     service.command('update-settlement', { name: 'Нижний Новгород', id: 432 });
@@ -17,9 +18,9 @@ setTimeout(() => {
         service.command('update-settlement', { name: 'Кировград', id: 439 });
     }, 5000);
 
-    service.subscribeOnQuery('get-currency', sendResponse => {
-        setTimeout(() => {
-            sendResponse('RUB');
-        }, 1000);
+    // subscribe on query
+    service.subscribeOnQuery('get-currency', (data, sendResponse) => {
+        console.log('content service starts handle query "get-currency" with data:', data);
+        setTimeout(() => sendResponse('RUB'), 1000);
     });
-}, 1000);
+}, 2000);
