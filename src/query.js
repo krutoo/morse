@@ -2,38 +2,45 @@ import { isFunction } from './utils.js';
 
 const queryTypeSymbol = Symbol('query-type');
 
-export function createQuery ({ data, timeout = 5000, onResolve } = {}) {
+export function createQuery ({ data, timeout = 5000, onResolve, onReject } = {}) {
     let isPending = false;
-    let isResolved = false;
+    let isDone = false;
     const query = {
         type: queryTypeSymbol,
         getData () {
             return data;
         },
-        isResolved () {
-            return !isPending && isResolved;
+        isDone () {
+            return !isPending && isDone;
         },
         isPending () {
             return isPending;
         },
         start () {
-            if (!isPending && !isResolved) {
+            if (!isPending && !isDone) {
                 isPending = true;
-                setTimeout(() => {
-                    if (!query.isResolved()) {
-                        query.resolve(undefined, new Error('Query was cancelled by timeout'));
-                    }
-                }, timeout);
+                setTimeout(query.reject, timeout);
             }
         },
-        resolve (response, error) {
-            if (isPending && !isResolved) {
-                isPending = false;
-                isResolved = true;
+        resolve (response) {
+            if (isPending && !isDone) {
+                query.done();
                 if (isFunction(onResolve)) {
-                    onResolve(response, error);
+                    onResolve(response);
                 }
             }
+        },
+        reject () {
+            if (isPending && !isDone) {
+                query.done();
+                if (isFunction(onReject)) {
+                    onReject(new Error('Query was cancelled by timeout'));
+                }
+            }
+        },
+        done () {
+            isPending = false;
+            isDone = true;
         },
     };
     return query;

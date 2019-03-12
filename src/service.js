@@ -10,19 +10,30 @@ export function createService (serviceId, transport) {
         get id () {
             return serviceId;
         },
-        query (queryName, { data, timeout = 5000, receive: onResolve } = {}) {
-            if (queryName && isFunction(onResolve)) {
+        get isReady () {
+            return isReady;
+        },
+        getPublicInterface () {
+            const { command, query, subscribeOnCommand, subscribeOnQuery } = service;
+            return { command, query, subscribeOnCommand, subscribeOnQuery };
+        },
+        query (queryName, { data, timeout = 5000 } = {}) {
+            // @todo validate arguments
+            return new Promise((resolve, reject) => {
                 const queueName = `query:${queryName}`;
-                transport.enqueue(queueName, createQuery({ data, timeout, onResolve }));
-            }
-            return service.getPublicInterface();
+                transport.enqueue(queueName, createQuery({
+                    data,
+                    timeout,
+                    onResolve: resolve,
+                    onReject: reject,
+                }));
+            });
         },
         command (commandName, commandData) {
             if (commandName) {
                 const queueName = `command:${commandName}`;
                 transport.enqueue(queueName, commandData);
             }
-            return service.getPublicInterface();
         },
         subscribeOnQuery (queryName, handleQuery) {
             if (queryName && isFunction(handleQuery)) {
@@ -33,7 +44,6 @@ export function createService (serviceId, transport) {
                 }
                 service.addHandler(queueName, handleQuery);
             }
-            return service.getPublicInterface();
         },
         subscribeOnCommand (commandName, handleCommand) {
             if (commandName && isFunction(handleCommand)) {
@@ -44,14 +54,16 @@ export function createService (serviceId, transport) {
                 }
                 service.addHandler(queueName, handleCommand);
             }
-            return service.getPublicInterface();
         },
-        getPublicInterface () {
-            const { command, query, subscribeOnCommand, subscribeOnQuery } = service;
-            return { command, query, subscribeOnCommand, subscribeOnQuery };
-        },
-        isReady () {
-            return isReady;
+        addHandler (queueName, handler) {
+            if (isFunction(handler)) {
+                if (!handlers[queueName]) {
+                    handlers[queueName] = [];
+                }
+                if (!handlers[queueName].includes(handler)) {
+                    handlers[queueName].push(handler);
+                }
+            }
         },
         getWatchingQueueNames () {
             return [...watchingQueueNames];
@@ -62,7 +74,7 @@ export function createService (serviceId, transport) {
         takeMessage (queueName, messageData) {
             if (queuesPositions.hasOwnProperty(queueName)) {
                 if (isQuery(messageData)) {
-                    if (!messageData.isPending() && !messageData.isResolved()) {
+                    if (!messageData.isPending() && !messageData.isDone()) {
                         isReady = false;
                         messageData.start();
                         service.callHandlers(queueName, messageData);
@@ -76,31 +88,31 @@ export function createService (serviceId, transport) {
         callHandlers (queueName, messageData) {
             const targetHandlers = handlers[queueName];
             if (Array.isArray(targetHandlers)) {
-                for (const handleMessage of targetHandlers) {
-                    if (isFunction(handleMessage)) {
-                        if (isQuery(messageData)) {
-                            if (!messageData.isResolved()) {
-                                handleMessage(messageData.getData(), response => {
-                                    if (!messageData.isResolved()) {
-                                        messageData.resolve(response);
-                                        isReady = true;
-                                    }
-                                });
-                            }
-                        } else {
-                            handleMessage(messageData);
-                        }
-                    }
+                for (const handler of targetHandlers) {
+                    service.callHandler(handler, messageData);
                 }
             }
         },
-        addHandler (queueName, handler) {
-            if (isFunction(handler)) {
-                if (!handlers[queueName]) {
-                    handlers[queueName] = [];
-                }
-                if (!handlers[queueName].includes(handler)) {
-                    handlers[queueName].push(handler);
+        callHandler (handleMessage, messageData) {
+            if (isFunction(handleMessage)) {
+                if (isQuery(messageData)) {
+                    if (!messageData.isDone()) {
+                        handleMessage(
+                            messageData.getData(),
+                            response => {
+                                if (!messageData.isDone()) {
+                                    messageData.resolve(response);
+                                    isReady = true;
+                                }
+                            },
+                            error => {
+                                messageData.reject(error);
+                                isReady = true;
+                            },
+                        );
+                    }
+                } else {
+                    handleMessage(messageData);
                 }
             }
         },

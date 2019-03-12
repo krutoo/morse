@@ -25,9 +25,8 @@ import HeaderView from './views/header-view.js';
 // create a new service and get a interface for messaging.
 const headerService = register('backbone-header');
 
-const headerView = new HeaderView({
-    onLogOut: headerService.command('user-logout'),
-});
+const headerView = new HeaderView({});
+headerView.on('log-out', () => headerService.command('user-logout'));
 ```
 
 

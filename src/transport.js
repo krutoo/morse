@@ -4,10 +4,9 @@ import { makeAutoGenerator } from './helpers/generator-helpers.js';
 export function createTransport () {
     const queues = {};
     const services = [];
-    // window.morseQueues = queues;
     let watcher = makeAutoGenerator(createWatcher(services, queues));
     const transport = {
-        createService (serviceId = Math.random().toString(16).slice(2)) {
+        createService (serviceId) {
             const service = createService(serviceId, transport);
             services.push(service);
             return service.getPublicInterface();
@@ -17,6 +16,8 @@ export function createTransport () {
                 if (!Array.isArray(queues[messageName])) {
                     queues[messageName] = [];
                 }
+
+                // @todo возможно стоит ввести сущность Message({ data })
                 queues[messageName].push({ ...messageData });
             }
         },
@@ -42,7 +43,7 @@ export function* createWatcher (services = [], queues = {}) {
                 getWatchingQueueNames,
             } = service;
             const messageNames = yield getWatchingQueueNames();
-            if (isReady()) {
+            if (isReady) {
                 for (const messageName of messageNames) {
                     const queue = queues[messageName];
                     const position = yield getQueuePosition(messageName);
