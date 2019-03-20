@@ -20,8 +20,8 @@ export function isFunction (value) {
 
 /**
  * Return a tag of input value.
- * @param  {*} value Value to define it class.
- * @return {string} Name of class.
+ * @param  {*} value Value to define it tag.
+ * @return {string} Tag.
  */
 export function getTag (value) {
     return Object.prototype.toString.call(value).slice(8, -1);

@@ -1,5 +1,5 @@
 import Service from './service.js';
-import { makeAutoGenerator } from './helpers/generator-helpers.js';
+import { makeLoopedGenerator, makeAutoGenerator } from './helpers/generator-helpers.js';
 import { getTag } from './utils.js';
 
 export const transportTypeName = 'MorseTransport';
@@ -7,7 +7,7 @@ export const transportTypeName = 'MorseTransport';
 export function createTransport () {
     const queues = {};
     const services = [];
-    let watcher = makeAutoGenerator(createWatcher(services, queues));
+    let watcher = makeLoopedGenerator(() => makeAutoGenerator(createWatcher(services, queues)));
     const transport = {
         [Symbol.toStringTag]: transportTypeName,
         register (serviceId) {
@@ -25,15 +25,11 @@ export function createTransport () {
                 queues[messageName].push({ ...messageData });
             }
         },
-        watch () {
-            const { done } = watcher.next();
-            if (done) {
-                watcher = makeAutoGenerator(createWatcher(services, queues));
-            }
-            setTimeout(transport.watch, 50); // задержка для отладки
-        },
     };
-    transport.watch();
+    (function watch () {
+        watcher.next();
+        setTimeout(watch, 50); // задержка для отладки
+    }());
     return transport;
 }
 
