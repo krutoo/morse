@@ -1,4 +1,3 @@
-import { createService } from './service.js';
 import getTransport from './get-transport.js';
 
 /**
@@ -6,8 +5,6 @@ import getTransport from './get-transport.js';
  * @param {(string|number)} id Unique identifier of service.
  * @return {Object} Service interface.
  */
-function register (id) {
-    return getTransport().createService(id);
+export function register (id) {
+    return getTransport().register(id);
 }
-
-export { register, getTransport };

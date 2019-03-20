@@ -1,12 +1,12 @@
-import { isFunction } from './utils.js';
+import { getTag, isFunction } from './utils.js';
 
-const queryTypeSymbol = Symbol('query-type');
+export const queryTypeName = 'MorseQuery';
 
 export function createQuery ({ data, timeout = 5000, onResolve, onReject } = {}) {
     let isPending = false;
     let isDone = false;
     const query = {
-        type: queryTypeSymbol,
+        [Symbol.toStringTag]: queryTypeName,
         getData () {
             return data;
         },
@@ -47,5 +47,5 @@ export function createQuery ({ data, timeout = 5000, onResolve, onReject } = {})
 }
 
 export function isQuery (value) {
-    return value && value.type === queryTypeSymbol;
+    return getTag(value) === queryTypeName;
 }

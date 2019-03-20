@@ -3,10 +3,10 @@
  * @type {Array<string>}
  */
 const functionTags = Object.freeze([
-	'Function',
-	'AsyncFunction',
-	'GeneratorFunction',
-	'Proxy',
+    'Function',
+    'AsyncFunction',
+    'GeneratorFunction',
+    'Proxy',
 ]);
 
 /**
@@ -15,14 +15,14 @@ const functionTags = Object.freeze([
  * @return {boolean} Is it a function?
  */
 export function isFunction (value) {
-	return functionTags.includes(classOf(value));
+    return functionTags.includes(getTag(value));
 }
 
 /**
- * Return a class of input value (true way to get it).
+ * Return a tag of input value.
  * @param  {*} value Value to define it class.
  * @return {string} Name of class.
  */
-export function classOf (value) {
-	return Object.prototype.toString.call(value).slice(8, -1);
+export function getTag (value) {
+    return Object.prototype.toString.call(value).slice(8, -1);
 }

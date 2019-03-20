@@ -1,15 +1,19 @@
-import { createService } from './service.js';
+import Service from './service.js';
 import { makeAutoGenerator } from './helpers/generator-helpers.js';
+import { getTag } from './utils.js';
+
+export const transportTypeName = 'MorseTransport';
 
 export function createTransport () {
     const queues = {};
     const services = [];
     let watcher = makeAutoGenerator(createWatcher(services, queues));
     const transport = {
-        createService (serviceId) {
-            const service = createService(serviceId, transport);
+        [Symbol.toStringTag]: transportTypeName,
+        register (serviceId) {
+            const service = new Service(serviceId);
             services.push(service);
-            return service.getPublicInterface();
+            return service;
         },
         enqueue (messageName = '', messageData = {}) {
             if (messageName) {
@@ -33,22 +37,20 @@ export function createTransport () {
     return transport;
 }
 
+export function isTransport (value) {
+    return getTag(value) === transportTypeName;
+}
+
 export function* createWatcher (services = [], queues = {}) {
     if (Array.isArray(services) && queues) {
         for (const service of services) {
-            const {
-                isReady,
-                takeMessage,
-                getQueuePosition,
-                getWatchingQueueNames,
-            } = service;
-            const messageNames = yield getWatchingQueueNames();
-            if (isReady) {
-                for (const messageName of messageNames) {
+            if (service.isReady) {
+                const queueNames = yield service.getWatchingQueueNames();
+                for (const messageName of queueNames) {
                     const queue = queues[messageName];
-                    const position = yield getQueuePosition(messageName);
+                    const position = yield service.getQueuePosition(messageName);
                     if (Array.isArray(queue) && position < queue.length) {
-                        yield takeMessage(messageName, queue[position]);
+                        yield service.takeMessage(messageName, queue[position]);
                     }
                 }
             }

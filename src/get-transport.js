@@ -1,11 +1,10 @@
-import { createTransport } from './transport.js';
+import { createTransport, isTransport } from './transport.js';
 
-export const morseRadioKey = `MorseRadio-${(1791).toString(2)}`;
+export const morseRadioKey = 'MorseRadio';
 
 export default function getTransport () {
-    if (!window[morseRadioKey]) {
-        const { createService } = createTransport();
-        window[morseRadioKey] = { createService }; // public transport API
+    if (!isTransport(window[morseRadioKey])) {
+        window[morseRadioKey] = createTransport();
     }
     return window[morseRadioKey];
 }
