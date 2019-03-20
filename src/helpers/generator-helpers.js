@@ -3,8 +3,8 @@ export function makeAutoGenerator (generator) {
     return {
         ...generator,
         next (newValue = lastValue) {
-            const step = generator.next(lastValue);
-            lastValue = step.value
+            const step = generator.next(newValue);
+            lastValue = step.value;
             return step;
         },
     };

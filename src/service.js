@@ -110,7 +110,7 @@ export function callHandlers (queueName, message) {
 }
 
 export function getHandlerPayload (message) {
-    const handlerArguments = []
+    const handlerArguments = [];
     if (isQuery(message) && !message.isDone()) {
         handlerArguments.push(
             message.getData(),

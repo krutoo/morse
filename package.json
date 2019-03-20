@@ -4,11 +4,15 @@
   "description": "CQRS transport API for messaging between apps in one HTML document",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint ."
   },
   "keywords": [
     "cqrs"
   ],
   "author": "Dmitry Petrov",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^5.15.3",
+    "eslint-plugin-import": "^2.16.0"
+  }
 }
