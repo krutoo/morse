@@ -50,6 +50,13 @@
 		"space-infix-ops": "error",
 		"brace-style": "error",
 		"no-param-reassign": "error",
+		"camelcase": [
+			"error",
+			{
+				"properties": "always",
+				"ignoreDestructuring": false
+			}
+		],
 		"eol-last": [
 			"error",
 			"always"
@@ -170,6 +177,29 @@
 			{
 				"ignorePackages": true
 			}
-        ]
+		],
+		"generator-star-spacing": [
+			"error",
+			{
+				"before": false,
+				"after": true
+			}
+		],
+		"object-curly-spacing": [
+			"error",
+			"always"
+		],
+		"one-var": [
+			"error",
+			{
+				"var": "never",
+				"let": "never",
+				"const": "never"
+			}
+		],
+		"object-shorthand": [
+			"error",
+			"always"
+		]
     }
 }
