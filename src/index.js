@@ -1,5 +1,8 @@
 import getTransport from './get-transport.js';
 
+// initialize transport
+getTransport();
+
 /**
  * Returns a new service interface.
  * @param {(string|number)} id Unique identifier of service.
