@@ -13,7 +13,7 @@ setTimeout(() => {
 
     // send query
     console.log('header service sent query "get-currency"');
-    service.query('get-currency', { data: { a: 1, b: 2 }, timeout: 10000 })
+    service.query('get-currency', { data: { a: 1, b: 2 }, timeout: 5000 })
         .then(response => console.log('query "get-currency" was resolved with response:', response))
         .catch(error => console.error('query "get-currency" was rejected with error:', error));
-}, 1000);
+}, 2000);

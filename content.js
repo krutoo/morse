@@ -14,11 +14,10 @@ setTimeout(() => {
     service.command('update-settlement', { name: 'Санкт-петербург', id: 120 });
     service.command('update-settlement', { name: 'Краснодар', id: 41 });
     service.command('update-settlement', { name: 'Нижний Тагил', id: 8022 });
-    setTimeout(() => service.command('update-settlement', { name: 'Кировград', id: 439 }), 5000);
 
     // subscribe on query
     service.subscribeOnQuery('get-currency', (data, resolve, reject) => {
         console.log('content service starts handle query "get-currency" with data:', data);
-        setTimeout(() => resolve('RUB'), 2000);
+        setTimeout(() => resolve('RUB'), 500);
     });
-}, 2000);
+}, 1000);

@@ -1,0 +1,47 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    box-sizing: border-box;
+    font: inherit;
+}
+
+body {
+    background-color: #f5f6fa;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+.loading-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-icon {
+    position: relative;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    border: .4rem solid #2f3640;
+    border-top-color: transparent;
+    animation: spin .75s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
