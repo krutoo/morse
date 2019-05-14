@@ -1,28 +1,22 @@
-/**
- * Functions class names.
- * @type {Array<string>}
- */
 const functionTags = Object.freeze([
-    'Function',
-    'AsyncFunction',
-    'GeneratorFunction',
-    'Proxy',
+  'Function',
+  'AsyncFunction',
+  'GeneratorFunction',
+  'Proxy',
 ]);
 
-/**
- * Check that value is a function.
- * @param {*} value Value.
- * @return {boolean} Is it a function?
- */
 export function isFunction (value) {
-    return functionTags.includes(getTag(value));
+  return functionTags.includes(getTag(value));
 }
 
-/**
- * Return a tag of input value.
- * @param  {*} value Value to define it tag.
- * @return {string} Tag.
- */
+export function isString (value) {
+  return getTag(value) === 'String';
+}
+
+export function isSymbol (value) {
+  return getTag(value) === 'Symbol';
+}
+
 export function getTag (value) {
-    return Object.prototype.toString.call(value).slice(8, -1);
+  return Object.prototype.toString.call(value).slice(8, -1);
 }
