@@ -1,4 +1,4 @@
-import { register } from './src/index.js';
+import { register } from '../src/index.js';
 
 // async register of page content service
 setTimeout(() => {
