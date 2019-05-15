@@ -41,6 +41,7 @@
     "no-useless-return": "error",
     "no-var": "error",
     "no-whitespace-before-property": "error",
+    "prefer-const": "error",
     "prefer-template": "error",
     "space-before-blocks": "error",
     "space-infix-ops": "error",

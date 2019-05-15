@@ -16,7 +16,7 @@ const createType = (() => {
   const typeNameKey = Symbol('$$typeof');
   const validateTypeName = createTypeNameValidator(types);
   return typeName => {
-    let error = validateTypeName(typeName, types);
+    const error = validateTypeName(typeName, types);
     if (error) {
       throw new TypeError(error);
     } else {
