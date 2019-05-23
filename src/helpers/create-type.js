@@ -1,6 +1,6 @@
 import { isString, isSymbol } from '../utils.js';
 
-const createTypeNameValidator = types => typeName => {
+export const createTypeNameValidator = types => typeName => {
   let error = '';
   if (![isString, isSymbol].some(check => check(typeName))) {
     error = 'Type name is required';
@@ -11,9 +11,9 @@ const createTypeNameValidator = types => typeName => {
   return error;
 };
 
-const createType = (() => {
+export const createTypeCreator = () => {
   const types = new Set();
-  const typeNameKey = Symbol('$$typeof');
+  const typeNameKey = '$$typeof';
   const validateTypeName = createTypeNameValidator(types);
   return typeName => {
     const error = validateTypeName(typeName, types);
@@ -32,6 +32,6 @@ const createType = (() => {
       },
     };
   };
-})();
+};
 
-export default createType;
+export default createTypeCreator();

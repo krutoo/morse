@@ -1,4 +1,4 @@
-import createType from '../helpers/create-type.js/index.js';
+import createType from '../helpers/create-type.js';
 
 const {
   hasType: isQueue,
