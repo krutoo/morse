@@ -10,8 +10,8 @@ const createQueue = startItems => {
     ? [...startItems]
     : [];
   return applyQueueType({
-    enqueue: item => items.push(item),
-    dequeue: () => items.pop(),
+    enqueue: item => void items.push(item),
+    dequeue: () => void items.pop(),
     getItem: index => items[index],
     getLength: () => items.length,
   });

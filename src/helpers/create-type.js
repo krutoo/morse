@@ -1,34 +1,47 @@
-import { isString, isSymbol } from '../utils.js';
+import { isObject, isFunction, isString, isSymbol } from '../utils.js';
 
-export const createTypeNameValidator = types => typeName => {
-  let error = '';
-  if (![isString, isSymbol].some(check => check(typeName))) {
-    error = 'Type name is required';
+export const createTypeNameValidator = isExistingType => {
+  if (!isFunction(isExistingType)) {
+    throw new TypeError('First argument must be a function');
   }
-  if (types instanceof Set && types.has(typeName)) {
-    error = `Type with name "${String(typeName)}" is already registered`;
-  }
-  return error;
+  return typeName => {
+    let errorMessage = '';
+    if (![isString, isSymbol].some(check => check(typeName))) {
+      errorMessage = 'Type name is required';
+    }
+    if (isExistingType(typeName)) {
+      errorMessage = `Type with name "${String(typeName)}" is already registered`;
+    }
+    return errorMessage;
+  };
 };
 
-export const createTypeCreator = () => {
+export const createTypeCreator = ({
+  typeNameKey = '$$typeof',
+  createValidator = createTypeNameValidator,
+} = {}) => {
   const types = new Set();
-  const typeNameKey = '$$typeof';
-  const validateTypeName = createTypeNameValidator(types);
+  const validateTypeName = createValidator(type => types.has(type));
   return typeName => {
-    const error = validateTypeName(typeName, types);
-    if (error) {
-      throw new TypeError(error);
+    const errorMessage = validateTypeName(typeName, types);
+    if (errorMessage) {
+      throw new TypeError(errorMessage);
     } else {
       types.add(typeName);
     }
     return {
+      typeName,
       hasType: value => Boolean(value) && value[typeNameKey] === typeName,
-      applyType: object => {
-        if (object) {
-          object[typeNameKey] = typeName;
+      applyType: value => {
+        if (isObject(value)) {
+          Object.defineProperty(value, typeNameKey, {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: typeName,
+          });
         }
-        return object;
+        return value;
       },
     };
   };

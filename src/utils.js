@@ -20,3 +20,8 @@ export function isSymbol (value) {
 export function getTag (value) {
   return Object.prototype.toString.call(value).slice(8, -1);
 }
+
+export function isObject (value) {
+  const type = typeof value;
+  return Boolean(value && (type === 'object' || type === 'function'));
+}
