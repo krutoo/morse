@@ -4,7 +4,8 @@
   "description": "CQRS transport API for messaging between apps in one HTML document",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "example:start": "parcel ./example/index.html"
   },
   "keywords": [
     "cqrs"
@@ -12,7 +13,9 @@
   "author": "Dmitry Petrov",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^5.15.3",
-    "eslint-plugin-import": "^2.16.0"
+    "eslint": "^5.16.0",
+    "eslint-config-krutoo": "0.0.7",
+    "eslint-plugin-import": "^2.20.2",
+    "parcel-bundler": "^1.12.4"
   }
 }
