@@ -1,18 +1,35 @@
+import { Type } from './helpers/type';
+
+export const { is: isMessage, apply: asMessage } = Type('morse::message');
+
+export const { is: isFactory, apply: asFactory } = Type('morse::message-factory');
+
 const MessageFactory = type => {
-  const Factory = topic => {
-    const creator = payload => ({ type, topic, payload });
+  const createFactory = topic => {
+    const factory = payload => asMessage({ type, topic, payload });
 
-    creator.toString = () => topic;
-    creator.topic = topic;
+    factory.toString = () => topic;
+    factory.topic = topic;
+    factory.type = type;
 
-    return creator;
+    return asFactory(factory);
   };
 
-  Factory.is = message => message?.type === type;
+  createFactory.is = message => message?.type === type;
 
-  return Factory;
+  return createFactory;
 };
 
-export const Command = MessageFactory('command');
+const Command = MessageFactory('@@command');
 
-export const Query = MessageFactory('query');
+const Query = MessageFactory('@@query');
+
+Query.responseOf = (message, payload) => Response(`[@@response]${message.topic}`)(payload);
+
+const Response = MessageFactory('@@response'); // eslint-disable-line no-shadow
+
+export {
+  Command,
+  Query,
+  Response,
+};
