@@ -1,4 +1,4 @@
-import { isFunction } from './utils';
+import { isFunction } from '../utils';
 
 export const Queue = () => {
   const items = [];
