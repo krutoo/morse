@@ -1,18 +1,19 @@
-import { isFunction } from '../utils';
+import { isFunction, Validator } from '../utils';
 import { isMessage } from '../messages';
 
 export const Queue = ({ isValid = () => true } = {}) => {
   const items = [];
   const listeners = [];
+  const validate = Validator(
+    isValid,
+    value => `Trying to enqueue invalid value: ${value}`
+  );
 
   return {
     getSize: () => items.length,
     getItem: index => items[index],
     enqueue: value => {
-      if (!isValid(value)) {
-        throw Error(`Trying to enqueue invalid value: ${value}`);
-      }
-
+      validate(value);
       items.push(value);
       listeners.forEach(listener => listener(value));
     },
