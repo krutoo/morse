@@ -1,11 +1,11 @@
 import { isFunction, Validator } from '../utils';
 import { isMessage } from '../messages';
 
-export const Queue = ({ isValid = () => true } = {}) => {
+export const Queue = ({ isValidItem = () => true } = {}) => {
   const items = [];
   const listeners = [];
   const validate = Validator(
-    isValid,
+    isValidItem,
     value => `Trying to enqueue invalid value: ${value}`
   );
 
@@ -23,4 +23,4 @@ export const Queue = ({ isValid = () => true } = {}) => {
   };
 };
 
-export const MessageQueue = () => Queue({ isValid: isMessage });
+export const MessageQueue = () => Queue({ isValidItem: isMessage });
