@@ -13,7 +13,7 @@ const MessageFactory = type => {
     return asFactory(factory);
   };
 
-  createFactory.is = message => message?.type === type;
+  createFactory.is = message => message ? message.type === type : false;
 
   return createFactory;
 };
