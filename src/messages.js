@@ -7,7 +7,6 @@ const MessageFactory = type => {
 
     const factory = payload => asMessage({ type, topic, payload });
 
-    factory.toString = () => topic;
     factory.topic = topic;
     factory.type = type;
 
