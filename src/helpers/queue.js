@@ -4,6 +4,7 @@ import { isMessage } from '../messages';
 export const Queue = ({ isValidItem = () => true } = {}) => {
   const items = [];
   const listeners = [];
+
   const validate = Validator(
     isValidItem,
     value => `Trying to enqueue invalid value: ${value}`
