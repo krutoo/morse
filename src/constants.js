@@ -1,1 +1,1 @@
-export const GLOBAL_BUS_KEY = '__MORSE__';
+export const GLOBAL_BUS_KEY = '__MORSE_GLOBALS__';
