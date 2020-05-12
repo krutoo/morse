@@ -77,8 +77,6 @@ const copyMessages = (sourceQueue, targetQueue, isSuitableMessage) => {
 
     isSuitableMessage(missedMessage.topic) && targetQueue.enqueue(missedMessage);
   }
-
-  return targetQueue;
 };
 
 const Validate = {
