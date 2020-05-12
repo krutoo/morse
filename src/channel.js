@@ -6,7 +6,6 @@ import { generateId, isFunction, Validator } from './utils';
 
 // @todo хранить статусы вопросов и отвечать шине о статусе по необходимости?
 export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
-  Validate.globalBus(GlobalBus);
   Validate.messageFactories(send);
   Validate.messageFactories(take);
 
@@ -80,13 +79,6 @@ const copyMessages = (sourceQueue, targetQueue, isSuitableMessage) => {
 };
 
 const Validate = {
-  globalBus: Validator(
-    Boolean,
-    () => [
-      'Unable to create channel: there is no global bus in this page.',
-      'Make sure you add the global bus script to the page or uses full library bundle.',
-    ].join(' \n'),
-  ),
   callback: Validator(
     isFunction,
     value => `Expected a function, received: ${value}`
