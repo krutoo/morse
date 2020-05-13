@@ -1,14 +1,9 @@
 import { isFunction, Validator } from '../utils';
 import { isMessage } from '../messages';
 
-export const Queue = ({ isValidItem = () => true } = {}) => {
+export const Queue = ({ validate = stubTrue } = {}) => {
   const items = [];
   const listeners = [];
-
-  const validate = Validator(
-    isValidItem,
-    value => `Trying to enqueue invalid value: ${value}`
-  );
 
   return {
     getSize: () => items.length,
@@ -24,4 +19,11 @@ export const Queue = ({ isValidItem = () => true } = {}) => {
   };
 };
 
-export const MessageQueue = () => Queue({ isValidItem: isMessage });
+const stubTrue = () => true;
+
+export const MessageQueue = () => Queue({
+  validate: Validator(
+    isMessage,
+    value => `Trying to enqueue invalid value: ${value}`
+  ),
+});
