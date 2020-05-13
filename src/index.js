@@ -6,3 +6,9 @@ export {
   Command,
   Query,
 };
+
+window.Morse = {
+  Channel,
+  Command,
+  Query,
+};
