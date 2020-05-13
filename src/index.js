@@ -1,13 +1,13 @@
 import { Command, Query } from './messages';
 import { Channel } from './channel';
 
-export {
+window.Morse = {
   Channel,
   Command,
   Query,
 };
 
-window.Morse = {
+export {
   Channel,
   Command,
   Query,
