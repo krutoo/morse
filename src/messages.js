@@ -1,11 +1,11 @@
 import { Type } from './helpers/type';
-import { Validator, isString } from './utils';
+import { Validator, isString, isObject } from './utils';
 
 const MessageFactory = type => {
   const createFactory = topic => {
     Validate.topic(topic);
 
-    const factory = payload => asMessage({ type, topic, payload });
+    const factory = payload => ({ type, topic, payload });
 
     factory.topic = topic;
     factory.type = type;
@@ -13,18 +13,20 @@ const MessageFactory = type => {
     return asFactory(factory);
   };
 
-  createFactory.is = message => message ? message.type === type : false;
+  createFactory.is = message => message?.type === type;
 
   return createFactory;
 };
 
-export const { is: isMessage, apply: asMessage } = Type('morse::message');
+export const isTopic = value => isString(value) && value.length > 0;
+
+export const isMessage = value => isObject(value) && isTopic(value.topic);
 
 export const { is: isFactory, apply: asFactory } = Type('morse::message-factory');
 
 const Validate = {
   topic: Validator(
-    value => isString(value) && value.length > 0,
+    isTopic,
     () => 'Message topic must be a non empty string'
   ),
 };
