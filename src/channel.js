@@ -51,7 +51,7 @@ export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
       if (SENT_TOPICS.has(message.topic)) {
         GlobalBus.globalQueue.enqueue(markAsOwn(message));
       } else {
-        throw Error(`Topic "${message.topic}" is not specified as sent`);
+        console.error(`Topic "${message.topic}" is not specified as sent`);
       }
     },
     take: handler => {
