@@ -1,14 +1,12 @@
-import { Command, Query } from './messages';
+import { Message } from './messages';
 import { Channel } from './channel';
 
 window.Morse = {
   Channel,
-  Command,
-  Query,
+  Message,
 };
 
 export {
   Channel,
-  Command,
-  Query,
+  Message,
 };
