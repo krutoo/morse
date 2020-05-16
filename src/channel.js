@@ -1,38 +1,34 @@
 import { GlobalBus } from './global/bus';
-import { Query, isMessage, isFactory, asMessage } from './messages';
+import { isMessage, isTopic } from './messages';
 import { MessageQueue } from './helpers/queue';
 import { StringSet } from './helpers/string-set';
 import { generateId, isFunction, Validator } from './utils';
 
 // @todo хранить статусы вопросов и отвечать шине о статусе по необходимости?
 export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
-  Validate.messageFactories(send);
-  Validate.messageFactories(take);
+  const SENT_TOPICS = StringSet(mapTopics(send));
+  const RECEIVED_TOPICS = StringSet(mapTopics(take));
 
-  const SENT_TOPICS = StringSet(mapTopics([
-    ...send,
-    ...take.filter(Query.is).map(Query.responseOf), // add responses for taking queries to send
-  ]));
-  const RECEIVED_TOPICS = StringSet(mapTopics([
-    ...take,
-    ...send.filter(Query.is).map(Query.responseOf), // add responses for sent queries to take
-  ]));
+  const id = generateId();
 
-  const id = generateId(); // @todo хранить все id в глобальной шине чтобы гарантировать уникальность?
-  const markAsOwn = message => asMessage({ ...message, meta: { ...message.meta, author: id } });
+  const markAsOwn = message => ({ ...message, meta: { ...message.meta, author: id } });
+
+  const isSuitableMessage = message => {
+    const { author, recipient } = message.meta || {};
+
+    return RECEIVED_TOPICS.has(message.topic)
+      && author !== id
+      && (!recipient || recipient === id);
+  };
 
   const queue = MessageQueue();
   const messageHandlers = [];
   let queuePosition = 0;
 
-  needMissed && copyMessages(GlobalBus.globalQueue, queue, RECEIVED_TOPICS.has);
+  needMissed && copyMessages(GlobalBus.globalQueue, queue, isSuitableMessage);
 
-  // @todo возможно стоит подписываться на конкретные топики чтобы не проверять топик лишний раз
-  // можно написать поверх глобальной очереди сортировщик распределяющий дополнительно по очередям конкретных топиков
   GlobalBus.globalQueue.subscribe(newMessage => {
-    RECEIVED_TOPICS.has(newMessage.topic)
-      && newMessage.meta.author !== id
-      && queue.enqueue(newMessage);
+    isSuitableMessage(newMessage) && queue.enqueue(newMessage);
   });
 
   queue.subscribe(newMessage => {
@@ -66,7 +62,7 @@ export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
   };
 };
 
-const mapTopics = list => list.map(factory => factory.topic);
+const mapTopics = list => list.map(value => value?.topic || value).filter(isTopic);
 
 const copyMessages = (sourceQueue, targetQueue, isSuitableMessage) => {
   const watchStartPosition = sourceQueue.getSize();
@@ -74,7 +70,7 @@ const copyMessages = (sourceQueue, targetQueue, isSuitableMessage) => {
   for (let i = 0; i < watchStartPosition; i++) {
     const missedMessage = sourceQueue.getItem(i);
 
-    isSuitableMessage(missedMessage.topic) && targetQueue.enqueue(missedMessage);
+    isSuitableMessage(missedMessage) && targetQueue.enqueue(missedMessage);
   }
 };
 
@@ -86,9 +82,5 @@ const Validate = {
   message: Validator(
     isMessage,
     value => `Expected valid message, received: ${value}`
-  ),
-  messageFactories: Validator(
-    value => Array.isArray(value) && value.every(isFactory),
-    value => `Expected array of message factories, received: ${value}`
   ),
 };
