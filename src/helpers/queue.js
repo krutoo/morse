@@ -24,6 +24,6 @@ const stubTrue = () => true;
 export const MessageQueue = () => Queue({
   validate: Validator(
     isMessage,
-    value => `Trying to enqueue invalid value: ${value}`
+    value => `Expected a valid message to enqueue, received: ${value}`
   ),
 });
