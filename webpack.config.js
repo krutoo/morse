@@ -9,7 +9,7 @@ module.exports = {
     libraryTarget: 'umd',
     umdNamedDefine: true,
   },
-  devtool: false,
+  devtool: 'source-map',
   module: {
     rules: [
       {
