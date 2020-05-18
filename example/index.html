@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morse example</title>
+    <link rel="stylesheet" href="./index.css">
+  </head>
+  <body>
+    <!-- each widget microservice work separately from others -->
+    <div class="services">
+      <div class="service first" data-service-key="mr. Footer" data-avatar="https://i.imgur.com/jd8XbdA.png">
+        <script src="./microservices/widget.js"></script>
+      </div>
+      <div class="service second" data-service-key="mrs. Header" data-avatar="https://i.imgur.com/or0wKui.png">
+        <script src="./microservices/widget.js"></script>
+      </div>
+      <div class="service third" data-service-key="MC Sidebar" data-avatar="https://i.imgur.com/fbKXlKr.png">
+        <script src="./microservices/widget.js"></script>
+      </div>
+    </div>
+
+    <!-- microservice without user interface -->
+    <script src="./microservices/status-generator.js"></script>
+  </body>
+</html>
