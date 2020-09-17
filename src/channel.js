@@ -32,7 +32,8 @@ export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
   });
 
   queue.subscribe(newMessage => {
-    const messageHandler = messageHandlers.pop();
+    // @todo похоже при получении сообщений нужно вызывать ВСЕ зарегистрированные callback'и а не только крайний
+    const messageHandler = messageHandlers.shift();
 
     if (messageHandler) {
       queuePosition < queue.getSize() && queuePosition++;
@@ -51,7 +52,7 @@ export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
       }
     },
     take: handler => {
-      Validate.callback(handler);
+      Validate.takeCallback(handler);
 
       if (queuePosition < queue.getSize()) {
         handler(queue.getItem(queuePosition++));
@@ -75,7 +76,7 @@ const copyMessages = (sourceQueue, targetQueue, isSuitableMessage) => {
 };
 
 const Validate = {
-  callback: Validator(
+  takeCallback: Validator(
     isFunction,
     value => `Expected a function, received: ${value}`
   ),

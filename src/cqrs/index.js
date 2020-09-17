@@ -25,11 +25,11 @@ Query.responseOf = (queryMessage, payload) => ({
   },
 });
 
-const globalQueueMiddleware = queue => enqueue => {
+const globalQueueMiddleware = queue => next => {
   const hasResponse = {};
 
   return message => {
-    if (message.meta.isQuery) {
+    if (message.meta?.isQuery) {
       const queryId = queue.getSize();
 
       hasResponse[queryId] = false;
@@ -38,25 +38,25 @@ const globalQueueMiddleware = queue => enqueue => {
         if (!hasResponse[queryId]) {
           hasResponse[queryId] = true;
 
-          enqueue({
-            topic: message.meta.responseTopic,
+          next({
+            topic: message.meta?.responseTopic,
             payload: Error('Query cancelled by timeout'),
-            meta: { recipient: message.meta.author, isResponse: true },
+            meta: { recipient: message.meta?.author, isResponse: true },
             error: true,
           });
         }
-      }, message.meta.timeout);
+      }, message.meta?.timeout);
 
-      enqueue({ ...message, meta: { ...message.meta, queryId } });
-    } else if (message.meta.isResponse) {
+      next({ ...message, meta: { ...message.meta, queryId } });
+    } else if (message.meta?.isResponse) {
       const { queryId } = message.meta;
 
       if (!hasResponse[queryId]) {
         hasResponse[queryId] = true;
-        enqueue(message);
+        next(message);
       }
     } else {
-      enqueue(message);
+      next(message);
     }
   };
 };
