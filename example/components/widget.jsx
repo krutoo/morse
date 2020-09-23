@@ -1,6 +1,8 @@
 import React, { Fragment, useState, useEffect, useReducer } from 'react';
 import sample from 'lodash/sample';
 import { Messages, PHRASES } from '../constants';
+import classnames from 'classnames';
+import './widget.css';
 
 export const Widget = ({
   avatarUrl,
@@ -40,26 +42,40 @@ export const Widget = ({
 
       <div className='title'>{title}</div>
       <div className='status'>{widgetStatus}</div>
-      <div className='log'>
+
+      <div className='chat'>
         {chatMessages.map((message, index) => (
-          <div key={index}>{message.payload}</div>
+          <div
+            key={index}
+            className={classnames('message', message.own && 'own')}
+          >
+            {message.payload}
+          </div>
         ))}
       </div>
 
-      <button
-        onClick={() => {
-          const newMessage = Messages.chatMessage(sample(PHRASES));
-          channel.send(newMessage);
+      <div className='buttons'>
+        <button
+          onClick={() => {
+            const newMessage = Messages.chatMessage(sample(PHRASES));
+            channel.send(newMessage);
 
-          // add self message to own list
-          addChatMessage(newMessage);
-        }}
-      >
-        Say something
-      </button>
-      <button onClick={() => channel.send(Messages.statusQuery())}>
-        Request status
-      </button>
+            // add self message to own list
+            addChatMessage({ ...newMessage, own: true });
+          }}
+        >
+          Say something
+        </button>
+        <button
+          onClick={() => {
+            setStatus('[loading]');
+            channel.send(Messages.statusQuery());
+          }}
+          disabled={widgetStatus === '[loading]'}
+        >
+          Request status
+        </button>
+      </div>
     </Fragment>
   );
 };

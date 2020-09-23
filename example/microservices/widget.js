@@ -20,7 +20,7 @@ const initService = () => {
   const avatarUrl = rootElement.getAttribute('data-avatar');
   const serviceKey = rootElement.getAttribute('data-service-key');
 
-  // creating channel
+  // creating channel to send and take messages
   const channel = Channel({
     send: [Messages.chatMessage, Messages.statusQuery.queryTopic],
     take: [Messages.chatMessage, Messages.statusQuery.responseTopic],
