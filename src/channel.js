@@ -5,6 +5,10 @@ import { StringSet } from './helpers/string-set';
 import { generateId, isFunction, Validator } from './utils';
 
 // @todo хранить статусы вопросов и отвечать шине о статусе по необходимости?
+
+/*
+ * Creates a new channel for sending/receiving messages.
+ */
 export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
   const SENT_TOPICS = StringSet(mapTopics(send));
   const RECEIVED_TOPICS = StringSet(mapTopics(take));

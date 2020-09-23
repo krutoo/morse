@@ -1,6 +1,10 @@
-const Query = baseTopic => {
-  const queryTopic = `[@@query]${baseTopic}`;
-  const responseTopic = `[@@response]${baseTopic}`;
+/*
+ * Creates new factory of query-messages.
+ * Query-message is message which can be answered.
+ */
+const Query = topicBase => {
+  const queryTopic = `[@@query]${topicBase}`;
+  const responseTopic = `[@@response]${topicBase}`;
 
   const createQuery = (payload, { timeout = 10000 } = {}) => ({
     topic: queryTopic,
@@ -25,6 +29,9 @@ Query.responseOf = (queryMessage, payload) => ({
   },
 });
 
+/*
+ * Middleware for global message queue.
+ */
 const globalQueueMiddleware = queue => next => {
   const hasResponse = {};
 

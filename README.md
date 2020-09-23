@@ -3,6 +3,7 @@
 Browser environment event sourcing tool for frontend micro services (with CQRS features)
 
 ## Motivation
+
 This may be necessary when one page contains applications written on different technologies
 (for example, React and Backbone) or when there are two applications on the page divided
 into different bundles (separate scripts).

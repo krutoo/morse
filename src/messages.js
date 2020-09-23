@@ -1,5 +1,8 @@
 import { Validator, isString, isObject } from './utils';
 
+/*
+ * Creates a new factory of messages.
+ */
 const Message = topic => {
   validateTopic(topic);
 
