@@ -2,7 +2,7 @@
   "name": "morse",
   "version": "0.0.1",
   "description": "CQRS transport API for messaging between apps in one HTML document",
-  "source": "src/with-globals.js",
+  "source": "src/index.js",
   "main": "build/index.js",
   "module": "build/index.module.js",
   "scripts": {
