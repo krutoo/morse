@@ -36,13 +36,12 @@ export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
   });
 
   queue.subscribe(newMessage => {
-    // @todo похоже при получении сообщений нужно вызывать ВСЕ зарегистрированные callback'и а не только крайний
-    const messageHandler = messageHandlers.shift();
+    // moving handlers to copied list for prevent loops "take, handle, take..."
+    const actualHandlers = messageHandlers.splice(0, messageHandlers.length);
 
-    if (messageHandler) {
-      queuePosition < queue.getSize() && queuePosition++;
-      messageHandler(newMessage);
-    }
+    actualHandlers.length && queuePosition < queue.getSize() && queuePosition++;
+
+    for (const handle of actualHandlers) handle(newMessage);
   });
 
   return {
@@ -70,9 +69,9 @@ export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
 const mapTopics = list => list.map(value => value?.topic || value).filter(isTopic);
 
 const copyMessages = (sourceQueue, targetQueue, isSuitableMessage) => {
-  const watchStartPosition = sourceQueue.getSize();
+  const startPosition = sourceQueue.getSize();
 
-  for (let i = 0; i < watchStartPosition; i++) {
+  for (let i = 0; i < startPosition; i++) {
     const missedMessage = sourceQueue.getItem(i);
 
     isSuitableMessage(missedMessage) && targetQueue.enqueue(missedMessage);

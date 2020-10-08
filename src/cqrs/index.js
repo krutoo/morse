@@ -1,5 +1,5 @@
 /*
- * Creates new factory of query-messages.
+ * Query() creates new factory of query-messages (like createAction() from redux-toolkit).
  * Query-message is message which can be answered.
  */
 const Query = topicBase => {
