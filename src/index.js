@@ -1,13 +1,12 @@
-import getTransport from './get-transport.js';
+import { Message } from './messages';
+import { Channel } from './channel';
 
-// initialize transport
-getTransport();
+window.Morse = {
+  Channel,
+  Message,
+};
 
-/**
- * Returns a new service interface.
- * @param {(string|number)} id Unique identifier of service.
- * @return {Object} Service interface.
- */
-export function register (id) {
-    return getTransport().register(id);
-}
+export {
+  Channel,
+  Message,
+};
