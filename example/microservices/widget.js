@@ -11,7 +11,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const startButton = document.createElement('button');
 
   startButton.onclick = initService;
-  startButton.innerHTML = 'Run service';
+  startButton.innerHTML = 'Load app';
 
   rootElement.append(startButton);
 });
