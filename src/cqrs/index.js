@@ -32,7 +32,7 @@ Query.responseOf = (queryMessage, payload) => ({
 /*
  * Middleware for global message queue.
  */
-const globalQueueMiddleware = queue => next => {
+const queueMiddleware = queue => next => {
   const hasResponse = {};
 
   return message => {
@@ -68,4 +68,4 @@ const globalQueueMiddleware = queue => next => {
   };
 };
 
-export { Query, globalQueueMiddleware };
+export { Query, queueMiddleware };
