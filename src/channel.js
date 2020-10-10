@@ -29,9 +29,9 @@ export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
   const messageHandlers = [];
   let queuePosition = 0;
 
-  needMissed && copyMessages(GlobalBus.globalQueue, queue, isSuitableMessage);
+  needMissed && copyMessages(GlobalBus.queue, queue, isSuitableMessage);
 
-  GlobalBus.globalQueue.subscribe(newMessage => {
+  GlobalBus.queue.subscribe(newMessage => {
     isSuitableMessage(newMessage) && queue.enqueue(newMessage);
   });
 
@@ -49,7 +49,7 @@ export const Channel = ({ send = [], take = [], needMissed = true } = {}) => {
       Validate.message(message);
 
       if (SENT_TOPICS.has(message.topic)) {
-        GlobalBus.globalQueue.enqueue(markAsOwn(message));
+        GlobalBus.queue.enqueue(markAsOwn(message));
       } else {
         console.error(`Topic "${message.topic}" is not specified as sent`);
       }
