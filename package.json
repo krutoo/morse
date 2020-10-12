@@ -5,7 +5,8 @@
   "scripts": {
     "library:build": "webpack --mode=production",
     "lint": "eslint .",
-    "example:start": "parcel ./example/index.html"
+    "example:start": "parcel ./example/index.html",
+    "example:build": "parcel build ./example/index.html --public-url ./"
   },
   "keywords": [
     "cqrs"
