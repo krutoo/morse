@@ -2,9 +2,9 @@ export interface Message <T extends string = string> {
   topic: T
 }
 
-export type PayloadMessage <T extends string = string, P = never> =
-Message<T>
-& ([P] extends [never] ? {} : { payload: P });
+export interface PayloadMessage <T extends string = string, P = undefined> extends Message<T> {
+  payload: P
+}
 
 export interface MessageContainer <T extends string = string> {
   message: Message<T>

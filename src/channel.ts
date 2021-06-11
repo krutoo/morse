@@ -7,31 +7,35 @@ import { copyMessages, generateId } from './utils';
 import { GlobalBus } from './bus';
 import { createQueue } from './queue';
 
-export interface ChannelCreatorOptions <S extends string = string, T extends string = string> {
+type TopicLike = string | { topic: string };
+
+type TopicOf <T extends TopicLike> = T extends { topic: string } ? T['topic'] : T;
+
+export interface ChannelCreatorOptions <S extends TopicLike, T extends TopicLike> {
   send?: S[]
   take?: T[]
   needMissed?: boolean
 }
 
-export const createChannel = <S extends string, T extends string> ({
+export const createChannel = <S extends TopicLike, T extends TopicLike> ({
   send = [],
   take = [],
   needMissed = true,
-}: ChannelCreatorOptions<S, T>): Channel<Message<S>, Message<T>> => {
+}: ChannelCreatorOptions<S, T>): Channel<Message<TopicOf<S>>, Message<TopicOf<T>>> => {
   const id = generateId();
 
-  const SENT_TOPICS = new Set<string>(send);
-  const RECEIVED_TOPICS = new Set<string>(take);
+  const SENT_TOPICS = new Set<string>(send.map(mapTopic));
+  const RECEIVED_TOPICS = new Set<string>(take.map(mapTopic));
 
-  const received = createQueue<MessageContainer<T>>();
-  const resolvers: Array<(message: Message<T>) => void> = [];
+  const received = createQueue<MessageContainer<TopicOf<T>>>();
+  const resolvers: Array<(message: Message<TopicOf<T>>) => void> = [];
 
-  const toContainer = (message: Message<S>): MessageContainer<S> => ({
+  const toContainer = (message: Message<TopicOf<S>>): MessageContainer<TopicOf<S>> => ({
     message,
     author: id,
   });
 
-  const isSuitable = (container: MessageContainer): container is MessageContainer<T> =>
+  const isSuitable = (container: MessageContainer): container is MessageContainer<TopicOf<T>> =>
     RECEIVED_TOPICS.has(container.message.topic)
     && container.author !== id;
 
@@ -71,3 +75,5 @@ export const createChannel = <S extends string, T extends string> ({
     }),
   };
 };
+
+const mapTopic = (t: TopicLike) => typeof t === 'string' ? t : t.topic;

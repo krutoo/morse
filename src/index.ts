@@ -1,3 +1,7 @@
 import { createChannel } from './channel';
+import { createMessage } from './message';
+import { Message, PayloadMessage, Channel } from './types';
 
-export { createChannel };
+export type { Message, PayloadMessage, Channel };
+
+export { createMessage, createChannel };
