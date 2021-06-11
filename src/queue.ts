@@ -1,6 +1,6 @@
-import { Queue, QueueMiddleware } from './types';
+import { Queue } from './types';
 
-export const createQueue = <T> ({ middleware }: { middleware?: QueueMiddleware<T> } = {}): Queue<T> => {
+export const createQueue = <T> (): Queue<T> => {
   const items: T[] = [];
   const listeners: Array<(item: T) => void> = [];
 
@@ -24,10 +24,6 @@ export const createQueue = <T> ({ middleware }: { middleware?: QueueMiddleware<T
       };
     },
   };
-
-  if (middleware) {
-    queue.enqueue = middleware(queue)(queue.enqueue);
-  }
 
   return queue;
 };
