@@ -1,6 +1,8 @@
-import { MessageContainer, Queue } from './types';
+import { MessageContainer, Queue, TopicLike } from './types';
 
 export const generateId = () => Math.random().toString(16).slice(2);
+
+export const mapTopic = (t: TopicLike) => typeof t === 'string' ? t : t.topic;
 
 export const copyMessages = <T extends string> (
   source: Queue<MessageContainer>,

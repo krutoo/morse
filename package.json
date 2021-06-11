@@ -1,14 +1,15 @@
 {
   "name": "morse",
   "version": "0.0.0",
-  "description": "Browser environment event sourcing tool with CQRS features",
+  "description": "Browser environment event sourcing tool",
+  "main": "./dist/index.js",
   "scripts": {
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "type-check": "tsc -p . --noEmit"
+    "type-check": "tsc -p . --noEmit",
+    "build": "rm -rf dist && tsc -p ."
   },
   "keywords": [
     "event sourcing",
-    "cqrs",
     "isolated",
     "frontend",
     "microservices",

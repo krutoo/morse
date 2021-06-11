@@ -2,14 +2,12 @@ import {
   Message,
   Channel,
   MessageContainer,
+  TopicLike,
+  TopicOf,
 } from './types';
-import { copyMessages, generateId } from './utils';
+import { copyMessages, generateId, mapTopic } from './utils';
 import { GlobalBus } from './bus';
 import { createQueue } from './queue';
-
-type TopicLike = string | { topic: string };
-
-type TopicOf <T extends TopicLike> = T extends { topic: string } ? T['topic'] : T;
 
 export interface ChannelCreatorOptions <S extends TopicLike, T extends TopicLike> {
   send?: S[]
@@ -75,5 +73,3 @@ export const createChannel = <S extends TopicLike, T extends TopicLike> ({
     }),
   };
 };
-
-const mapTopic = (t: TopicLike) => typeof t === 'string' ? t : t.topic;
