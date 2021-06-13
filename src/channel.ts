@@ -25,7 +25,10 @@ export const createChannel = <S extends TopicLike, T extends TopicLike> ({
   const SENT_TOPICS = new Set<string>(send.map(mapTopic));
   const RECEIVED_TOPICS = new Set<string>(take.map(mapTopic));
 
+  // queue of taken messages
   const received = createQueue<MessageContainer<TopicOf<T>>>();
+
+  // list of take() promise resolve functions
   const resolvers: Array<(message: Message<TopicOf<T>>) => void> = [];
 
   const toContainer = (message: Message<TopicOf<S>>): MessageContainer<TopicOf<S>> => ({
@@ -51,8 +54,8 @@ export const createChannel = <S extends TopicLike, T extends TopicLike> ({
 
     actualResolvers.length > 0 && queuePosition < received.getSize() && queuePosition++;
 
-    for (const handle of actualResolvers) {
-      handle(container.message);
+    for (const resolve of actualResolvers) {
+      resolve(container.message);
     }
   });
 
