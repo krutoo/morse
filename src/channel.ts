@@ -25,34 +25,41 @@ export const createChannel = <S extends TopicLike, T extends TopicLike> ({
   const SENT_TOPICS = new Set<string>(send.map(mapTopic));
   const RECEIVED_TOPICS = new Set<string>(take.map(mapTopic));
 
-  // queue of taken messages
+  // message utils
+  const Message = {
+    isSuitable: (container: MessageContainer): container is MessageContainer<TopicOf<T>> =>
+      RECEIVED_TOPICS.has(container.message.topic)
+      && container.author !== id,
+
+    toContainer: (message: Message<TopicOf<S>>): MessageContainer<TopicOf<S>> => ({
+      message,
+      author: id,
+    }),
+  } as const;
+
+  // own queue of taken messages
   const received = createQueue<MessageContainer<TopicOf<T>>>();
 
-  // list of take() promise resolve functions
+  // list of .take() promise resolve functions
   const resolvers: Array<(message: Message<TopicOf<T>>) => void> = [];
 
-  const toContainer = (message: Message<TopicOf<S>>): MessageContainer<TopicOf<S>> => ({
-    message,
-    author: id,
-  });
+  // position in own queue
+  let position = 0;
 
-  const isSuitable = (container: MessageContainer): container is MessageContainer<TopicOf<T>> =>
-    RECEIVED_TOPICS.has(container.message.topic)
-    && container.author !== id;
+  // copy messages sent before the channel was created
+  needMissed && copyMessages(GlobalBus.queue, received, Message.isSuitable);
 
-  let queuePosition = 0;
-
-  needMissed && copyMessages(GlobalBus.queue, received, isSuitable);
-
+  // observe **common** queue and pull messages
   GlobalBus.queue.observe(container => {
-    isSuitable(container) && received.enqueue(container);
+    Message.isSuitable(container) && received.enqueue(container);
   });
 
+  // observe **own** queue and resolve promises for .take()
   received.observe(container => {
     // copy handlers to new list for prevent loops "take, handle, take..."
     const actualResolvers = [...resolvers];
 
-    actualResolvers.length > 0 && queuePosition < received.getSize() && queuePosition++;
+    actualResolvers.length > 0 && position < received.getSize() && position++;
 
     for (const resolve of actualResolvers) {
       resolve(container.message);
@@ -62,14 +69,14 @@ export const createChannel = <S extends TopicLike, T extends TopicLike> ({
   return {
     send: message => {
       if (SENT_TOPICS.has(message.topic)) {
-        GlobalBus.queue.enqueue(toContainer(message));
+        GlobalBus.queue.enqueue(Message.toContainer(message));
       } else {
         console.error(`Topic "${message.topic}" is not specified as sent`);
       }
     },
     take: () => new Promise(resolve => {
-      if (queuePosition < received.getSize()) {
-        resolve(received.getItem(queuePosition++)?.message as any);
+      if (position < received.getSize()) {
+        resolve(received.getItem(position++)?.message as any);
       } else {
         resolvers.push(resolve);
       }
