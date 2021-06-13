@@ -9,11 +9,11 @@ export interface PayloadMessage <T extends string = string, P = undefined> exten
 
 export type PreparePayload =
 ((...args: any[]) => any)
-| (Noop);
+| Noop;
 
 export type MessageCreator <T extends string, P extends PreparePayload> =
 Message<T>
-& (P extends (Noop) ? {
+& (P extends Noop ? {
   (): PayloadMessage<T, undefined>
   match: (message: Message) => message is PayloadMessage<T, undefined>
 } : {
