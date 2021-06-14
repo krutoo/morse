@@ -6,7 +6,7 @@ export function createMessage <T extends string> (
 
 export function createMessage <T extends string, P extends PreparePayload> (
   topic: T,
-  prepare?: P
+  prepare: P
 ): MessageCreator<T, P>
 
 export function createMessage <T extends string, P extends PreparePayload> (

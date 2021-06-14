@@ -1,4 +1,5 @@
 export type Noop = () => void;
+
 export interface Message <T extends string = string> {
   topic: T
 }
