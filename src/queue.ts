@@ -1,6 +1,6 @@
 import { Queue } from './types';
 
-export const createQueue = <T> (): Queue<T> => {
+export const createQueue = <T>(): Queue<T> => {
   const items: T[] = [];
   const listeners: Array<(item: T) => void> = [];
 

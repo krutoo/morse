@@ -9,17 +9,23 @@ import { copyMessages, generateId, mapTopic } from './utils';
 import { GlobalBus } from './bus';
 import { createQueue } from './queue';
 
-export interface ChannelCreatorOptions <S extends TopicLike, T extends TopicLike> {
-  send?: S[]
-  take?: T[]
-  needMissed?: boolean
+export interface ChannelCreatorOptions<
+  S extends TopicLike,
+  T extends TopicLike
+> {
+  send?: S[];
+  take?: T[];
+  needMissed?: boolean;
 }
 
-export const createChannel = <S extends TopicLike, T extends TopicLike> ({
+export const createChannel = <S extends TopicLike, T extends TopicLike>({
   send = [],
   take = [],
   needMissed = true,
-}: ChannelCreatorOptions<S, T>): Channel<Message<TopicOf<S>>, Message<TopicOf<T>>> => {
+}: ChannelCreatorOptions<S, T>): Channel<
+  Message<TopicOf<S>>,
+  Message<TopicOf<T>>
+> => {
   const id = generateId();
 
   const SENT_TOPICS = new Set<string>(send.map(mapTopic));
@@ -27,11 +33,14 @@ export const createChannel = <S extends TopicLike, T extends TopicLike> ({
 
   // message utils
   const Message = {
-    isSuitable: (container: MessageContainer): container is MessageContainer<TopicOf<T>> =>
-      RECEIVED_TOPICS.has(container.message.topic)
-      && container.author !== id,
+    isSuitable: (
+      container: MessageContainer
+    ): container is MessageContainer<TopicOf<T>> =>
+      RECEIVED_TOPICS.has(container.message.topic) && container.author !== id,
 
-    toContainer: (message: Message<TopicOf<S>>): MessageContainer<TopicOf<S>> => ({
+    toContainer: (
+      message: Message<TopicOf<S>>
+    ): MessageContainer<TopicOf<S>> => ({
       message,
       author: id,
     }),
@@ -74,12 +83,13 @@ export const createChannel = <S extends TopicLike, T extends TopicLike> ({
         console.error(`Topic "${message.topic}" is not specified as sent`);
       }
     },
-    take: () => new Promise(resolve => {
-      if (position < received.getSize()) {
-        resolve(received.getItem(position++)?.message as any);
-      } else {
-        resolvers.push(resolve);
-      }
-    }),
+    take: () =>
+      new Promise(resolve => {
+        if (position < received.getSize()) {
+          resolve(received.getItem(position++)?.message as any);
+        } else {
+          resolvers.push(resolve);
+        }
+      }),
   };
 };

@@ -1,31 +1,32 @@
 import { PayloadMessage, MessageCreator, AnyFn, Message, Noop } from './types';
 
-export function createMessage <T extends string> (
+export function createMessage<T extends string>(
   topic: T
-): MessageCreator<T, Noop>
+): MessageCreator<T, Noop>;
 
-export function createMessage <T extends string, P extends AnyFn | Noop> (
+export function createMessage<T extends string, P extends AnyFn | Noop>(
   topic: T,
   prepare: P
-): MessageCreator<T, P>
+): MessageCreator<T, P>;
 
-export function createMessage <T extends string, P extends AnyFn | Noop> (
+export function createMessage<T extends string, P extends AnyFn | Noop>(
   topic: T,
   prepare?: P
 ) {
   const creator: MessageCreator<T, Noop> | MessageCreator<T, P> = Object.assign(
     prepare
       ? (...args: Parameters<P>): PayloadMessage<T, ReturnType<P>> => ({
-        topic,
-        payload: prepare(...args),
-      })
+          topic,
+          payload: prepare(...args),
+        })
       : (): PayloadMessage<T, undefined> => ({
-        topic,
-        payload: undefined,
-      }),
+          topic,
+          payload: undefined,
+        }),
     {
       topic,
-      match: (msg: Message): msg is PayloadMessage<T, ReturnType<P>> => msg.topic === topic,
+      match: (msg: Message): msg is PayloadMessage<T, ReturnType<P>> =>
+        msg.topic === topic,
     }
   );
 

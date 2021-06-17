@@ -3,11 +3,13 @@ import { GLOBAL_BUS_KEY } from './constants';
 import { MessageContainer, Queue } from './types';
 
 interface GlobalBus {
-  queue: Queue<MessageContainer>
+  queue: Queue<MessageContainer>;
 }
 
 declare global {
-  interface Window { [GLOBAL_BUS_KEY]: GlobalBus }
+  interface Window {
+    [GLOBAL_BUS_KEY]: GlobalBus;
+  }
 }
 
 window[GLOBAL_BUS_KEY] = window[GLOBAL_BUS_KEY] || {
