@@ -1,15 +1,15 @@
-import { PayloadMessage, MessageCreator, PreparePayload, Message, Noop } from './types';
+import { PayloadMessage, MessageCreator, AnyFn, Message, Noop } from './types';
 
 export function createMessage <T extends string> (
   topic: T
 ): MessageCreator<T, Noop>
 
-export function createMessage <T extends string, P extends PreparePayload> (
+export function createMessage <T extends string, P extends AnyFn | Noop> (
   topic: T,
   prepare: P
 ): MessageCreator<T, P>
 
-export function createMessage <T extends string, P extends PreparePayload> (
+export function createMessage <T extends string, P extends AnyFn | Noop> (
   topic: T,
   prepare?: P
 ) {
