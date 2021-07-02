@@ -1,6 +1,6 @@
 # Morse
 
-Browser environment event sourcing tool for frontend micro services (with CQRS features)
+Browser environment event sourcing tool for frontend micro services
 
 ## Motivation
 
