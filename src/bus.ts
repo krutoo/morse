@@ -1,6 +1,6 @@
-import { createQueue } from './queue';
-import { GLOBAL_BUS_KEY } from './constants';
-import { MessageContainer, Queue } from './types';
+import { createQueue } from './queue.ts';
+import { GLOBAL_BUS_KEY } from './constants.ts';
+import type { MessageContainer, Queue } from './types.ts';
 
 interface GlobalBus {
   queue: Queue<MessageContainer>;
@@ -16,4 +16,4 @@ window[GLOBAL_BUS_KEY] = window[GLOBAL_BUS_KEY] || {
   queue: createQueue<MessageContainer>(),
 };
 
-export const GlobalBus = window[GLOBAL_BUS_KEY];
+export const GlobalBus: GlobalBus = window[GLOBAL_BUS_KEY];

@@ -1,19 +1,17 @@
-import { PayloadMessage, MessageCreator, AnyFn, Message, Noop } from './types';
+import type { PayloadMessage, MessageCreator, AnyFn, Message } from './types.ts';
 
-export function createMessage<T extends string>(
-  topic: T
-): MessageCreator<T, Noop>;
+export function createMessage<T extends string>(topic: T): MessageCreator<T, VoidFunction>;
 
-export function createMessage<T extends string, P extends AnyFn | Noop>(
+export function createMessage<T extends string, P extends AnyFn | VoidFunction>(
   topic: T,
-  prepare: P
+  prepare: P,
 ): MessageCreator<T, P>;
 
-export function createMessage<T extends string, P extends AnyFn | Noop>(
+export function createMessage<T extends string, P extends AnyFn | VoidFunction>(
   topic: T,
-  prepare?: P
+  prepare?: P,
 ) {
-  const creator: MessageCreator<T, Noop> | MessageCreator<T, P> = Object.assign(
+  const creator: MessageCreator<T, VoidFunction> | MessageCreator<T, P> = Object.assign(
     prepare
       ? (...args: Parameters<P>): PayloadMessage<T, ReturnType<P>> => ({
           topic,
@@ -25,9 +23,8 @@ export function createMessage<T extends string, P extends AnyFn | Noop>(
         }),
     {
       topic,
-      match: (msg: Message): msg is PayloadMessage<T, ReturnType<P>> =>
-        msg.topic === topic,
-    }
+      match: (msg: Message): msg is PayloadMessage<T, ReturnType<P>> => msg.topic === topic,
+    },
   );
 
   return creator;
