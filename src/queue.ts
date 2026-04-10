@@ -1,4 +1,4 @@
-import { Queue } from './types';
+import type { Queue } from './types.ts';
 
 export const createQueue = <T>(): Queue<T> => {
   const items: T[] = [];
